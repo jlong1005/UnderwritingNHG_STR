@@ -1,7 +1,17 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI()
+
+# ✅ Enable CORS so frontend can contact backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can limit this later to your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class UnderwriteRequest(BaseModel):
     url: str
@@ -11,7 +21,7 @@ class UnderwriteRequest(BaseModel):
 
 @app.post("/api/underwrite")
 def underwrite(data: UnderwriteRequest):
-    # Here you can replace this with your actual underwriting logic
+    # Example underwriting logic (replace later)
     optimized_data = {
         "original_inputs": {
             "Zillow URL": data.url,
@@ -22,7 +32,7 @@ def underwrite(data: UnderwriteRequest):
         "recommendation": {
             "message": "Example optimization logic here",
             "suggested_price_reduction": "5%",
-            "adjusted_roi": round(data.adr * data.occupancy / 100 / 365 / 2, 2)  # just dummy logic
+            "adjusted_roi": round(data.adr * data.occupancy / 100 / 365 / 2, 2)  # dummy math
         },
         "assumptions": [
             "If we achieve a 5% discount on purchase price",
